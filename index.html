@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cardiac Monitor - Professional Heart Animation</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-color: #e53935;
+            --primary-light: #ffcdd2;
+            --primary-dark: #b71c1c;
+            --text-primary: #212121;
+            --text-secondary: #757575;
+            --background: #fafafa;
+            --surface: #ffffff;
+            --border: #e0e0e0;
+            --success: #4caf50;
+            --warning: #ff9800;
+            --error: #f44336;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--background);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        .app-container {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            background-color: var(--surface);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .logo i {
+            color: var(--primary-color);
+            font-size: 1.75rem;
+        }
+
+        .logo h1 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-secondary);
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary-color);
+        }
+
+        main {
+            flex: 1;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem;
+            width: 100%;
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+        }
+
+        .card {
+            background-color: var(--surface);
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            padding: 2rem;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .card-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--primary-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary-color);
+        }
+
+        .heart-monitor {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 2rem 0;
+        }
+
+        .heart-container {
+            position: relative;
+            width: 200px;
+            height: 200px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .heart {
+            position: relative;
+            width: 120px;
+            height: 108px;
+            animation: heartbeat 1.5s infinite;
+            filter: drop-shadow(0 0 15px rgba(229, 57, 53, 0.4));
+        }
+
+        .heart:before,
+        .heart:after {
+            position: absolute;
+            content: "";
+            left: 60px;
+            top: 0;
+            width: 60px;
+            height: 96px;
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+            border-radius: 60px 60px 0 0;
+            transform: rotate(-45deg);
+            transform-origin: 0 100%;
+            box-shadow: inset -3px -3px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .heart:after {
+            left: 0;
+            transform: rotate(45deg);
+            transform-origin: 100% 100%;
+            box-shadow: inset 3px -3px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .pulse-ring {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            border: 3px solid rgba(229, 57, 53, 0.3);
+            animation: pulse 2s infinite;
+        }
+
+        .pulse-ring:nth-child(2) {
+            animation-delay: 0.5s;
+        }
+
+        .pulse-ring:nth-child(3) {
+            animation-delay: 1s;
+        }
+
+        @keyframes heartbeat {
+            0% {
+                transform: scale(1);
+            }
+            10% {
+                transform: scale(1.05);
+            }
+            20% {
+                transform: scale(1.1);
+            }
+            30% {
+                transform: scale(1.15);
+            }
+            40% {
+                transform: scale(1.1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+            60% {
+                transform: scale(1);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: translate(-50%, -50%) scale(0.8);
+                opacity: 0.8;
+            }
+            100% {
+                transform: translate(-50%, -50%) scale(1.5);
+                opacity: 0;
+            }
+        }
+
+        .vital-stats {
+            display: flex;
+            justify-content: center;
+            gap: 3rem;
+            margin-top: 1rem;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+
+        .stat-label {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .ecg-container {
+            margin-top: 2rem;
+            width: 100%;
+            height: 120px;
+            background-color: #f5f5f5;
+            border-radius: 8px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .ecg-line {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 200%;
+            height: 100%;
+            animation: ecg-move 5s linear infinite;
+        }
+
+        @keyframes ecg-move {
+            0% {
+                transform: translateX(0);
+            }
+            100% {
+                transform: translateX(-50%);
+            }
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .stat-card {
+            background-color: var(--surface);
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            transition: transform 0.3s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-3px);
+        }
+
+        .stat-card-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .stat-card-icon.heart-rate {
+            background-color: rgba(229, 57, 53, 0.1);
+            color: var(--primary-color);
+        }
+
+        .stat-card-icon.blood-pressure {
+            background-color: rgba(33, 150, 243, 0.1);
+            color: #2196f3;
+        }
+
+        .stat-card-icon.oxygen {
+            background-color: rgba(76, 175, 80, 0.1);
+            color: var(--success);
+        }
+
+        .stat-card-icon.temperature {
+            background-color: rgba(255, 152, 0, 0.1);
+            color: var(--warning);
+        }
+
+        .stat-card-content h3 {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+            margin-bottom: 0.25rem;
+        }
+
+        .stat-card-content .value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .footer {
+            background-color: var(--surface);
+            border-top: 1px solid var(--border);
+            padding: 2rem 0;
+            text-align: center;
+            color: var(--text-secondary);
+            margin-top: 3rem;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+        }
+
+        .footer p {
+            margin-bottom: 0.5rem;
+        }
+
+        .footer .heart-icon {
+            color: var(--primary-color);
+        }
+
+        .status-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            margin-top: 1rem;
+        }
+
+        .status-normal {
+            background-color: rgba(76, 175, 80, 0.1);
+            color: var(--success);
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: currentColor;
+            animation: blink 2s infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .nav-links {
+                gap: 1rem;
+            }
+
+            .vital-stats {
+                flex-direction: column;
+                gap: 1.5rem;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <header>
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fas fa-heartbeat"></i>
+                    <h1>Cardiac Monitor</h1>
+                </div>
+                <nav class="nav-links">
+                    <a href="#">Dashboard</a>
+                    <a href="#">History</a>
+                    <a href="#">Reports</a>
+                    <a href="#">Settings</a>
+                </nav>
+            </div>
+        </header>
+
+        <main>
+            <div class="dashboard">
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">Real-time Heart Monitoring</h2>
+                        <div class="card-icon">
+                            <i class="fas fa-heart"></i>
+                        </div>
+                    </div>
+                    
+                    <div class="heart-monitor">
+                        <div class="heart-container">
+                            <div class="pulse-ring"></div>
+                            <div class="pulse-ring"></div>
+                            <div class="pulse-ring"></div>
+                            <div class="heart"></div>
+                        </div>
+                        
+                        <div class="vital-stats">
+                            <div class="stat">
+                                <div class="stat-value" id="heartRate">72</div>
+                                <div class="stat-label">BPM</div>
+                            </div>
+                            <div class="stat">
+                                <div class="stat-value" id="bloodPressure">120/80</div>
+                                <div class="stat-label">mmHg</div>
+                            </div>
+                            <div class="stat">
+                                <div class="stat-value" id="oxygenLevel">98</div>
+                                <div class="stat-label">SpO2 %</div>
+                            </div>
+                        </div>
+                        
+                        <div class="status-indicator status-normal">
+                            <span class="status-dot"></span>
+                            <span>Normal Heart Rhythm</span>
+                        </div>
+                        
+                        <div class="ecg-container">
+                            <svg class="ecg-line" viewBox="0 0 1200 120" preserveAspectRatio="none">
+                                <path d="M0,60 L200,60 L210,30 L220,90 L230,60 L400,60 L410,20 L420,100 L430,60 L600,60 L610,30 L620,90 L630,60 L800,60 L810,20 L820,100 L830,60 L1000,60 L1010,30 L1020,90 L1030,60 L1200,60" 
+                                      stroke="#e53935" 
+                                      stroke-width="2" 
+                                      fill="none" />
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-card-icon heart-rate">
+                            <i class="fas fa-heartbeat"></i>
+                        </div>
+                        <div class="stat-card-content">
+                            <h3>Heart Rate</h3>
+                            <div class="value" id="heartRateStat">72 BPM</div>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-card-icon blood-pressure">
+                            <i class="fas fa-tint"></i>
+                        </div>
+                        <div class="stat-card-content">
+                            <h3>Blood Pressure</h3>
+                            <div class="value" id="bloodPressureStat">120/80 mmHg</div>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-card-icon oxygen">
+                            <i class="fas fa-lungs"></i>
+                        </div>
+                        <div class="stat-card-content">
+                            <h3>Oxygen Level</h3>
+                            <div class="value" id="oxygenLevelStat">98%</div>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-card-icon temperature">
+                            <i class="fas fa-thermometer-half"></i>
+                        </div>
+                        <div class="stat-card-content">
+                            <h3>Temperature</h3>
+                            <div class="value" id="temperatureStat">36.6°C</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <footer class="footer">
+            <div class="footer-content">
+                <p>Professional Cardiac Monitoring System</p>
+                <p>Made with <i class="fas fa-heart heart-icon"></i> by Sauravhhh</p>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // Simulate varying vital signs
+        function updateVitals() {
+            // Heart rate between 60-100
+            const heartRate = Math.floor(Math.random() * 40) + 60;
+            document.getElementById('heartRate').textContent = heartRate;
+            document.getElementById('heartRateStat').textContent = `${heartRate} BPM`;
+            
+            // Blood pressure (systolic: 110-140, diastolic: 70-90)
+            const systolic = Math.floor(Math.random() * 30) + 110;
+            const diastolic = Math.floor(Math.random() * 20) + 70;
+            const bloodPressure = `${systolic}/${diastolic}`;
+            document.getElementById('bloodPressure').textContent = bloodPressure;
+            document.getElementById('bloodPressureStat').textContent = `${bloodPressure} mmHg`;
+            
+            // Oxygen level between 95-99
+            const oxygenLevel = Math.floor(Math.random() * 4) + 95;
+            document.getElementById('oxygenLevel').textContent = oxygenLevel;
+            document.getElementById('oxygenLevelStat').textContent = `${oxygenLevel}%`;
+            
+            // Temperature between 36.0-37.5
+            const temperature = (Math.random() * 1.5 + 36.0).toFixed(1);
+            document.getElementById('temperatureStat').textContent = `${temperature}°C`;
+            
+            // Adjust heart animation speed based on heart rate
+            const heartElement = document.querySelector('.heart');
+            const animationDuration = 60 / heartRate; // Convert to seconds per beat
+            heartElement.style.animationDuration = `${animationDuration}s`;
+            
+            // Schedule next update
+            setTimeout(updateVitals, Math.random() * 5000 + 3000); // Random interval between 3-8 seconds
+        }
+        
+        // Start the vital signs simulation
+        setTimeout(updateVitals, 3000);
+        
+        // Add interactive touch effect for mobile
+        const heartContainer = document.querySelector('.heart-container');
+        const heartElement = document.querySelector('.heart');
+        
+        heartContainer.addEventListener('touchstart', function() {
+            heartElement.style.transform = 'scale(1.2)';
+            heartElement.style.transition = 'transform 0.3s';
+        });
+        
+        heartContainer.addEventListener('touchend', function() {
+            heartElement.style.transform = 'scale(1)';
+        });
+        
+        // Similar effect for mouse events on desktop
+        heartContainer.addEventListener('mousedown', function() {
+            heartElement.style.transform = 'scale(1.2)';
+            heartElement.style.transition = 'transform 0.3s';
+        });
+        
+        heartContainer.addEventListener('mouseup', function() {
+            heartElement.style.transform = 'scale(1)';
+        });
+    </script>
+</body>
+</html>
